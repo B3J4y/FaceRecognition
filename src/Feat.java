@@ -25,9 +25,9 @@ public class Feat {
 	}
 	
 	enum Shape{
-		HOOR2,
+		HOR2,
 		VERT2,
-		HOOR3,
+		HOR3,
 		VERT3,
 		QUAD;
 	}
