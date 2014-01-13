@@ -5,13 +5,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class Feat {
+public class Feat implements Comparable<Feat> {
 	boolean face;
 	Shape shape;
 	Pair position;
 	Pair size;
-	int treshold;
-	int polarity;
+	private double allweight;
+	public int treshold;
+	public int polarity;
+	public double error;
 	public List<ValueFace> valuesFaces;
 	
 	
@@ -66,6 +68,18 @@ public class Feat {
 		}
 	}
 	
+	public double getAllweight() {
+		double weights = 0;
+		for(ValueFace vf : this.valuesFaces){
+			weights += vf.weight;
+		}
+		return weights;
+	}
+
+	public void setAllweight(double allweight) {
+		this.allweight = allweight;
+	}
+
 	@Override
 	public String toString(){
 		
@@ -80,5 +94,11 @@ public class Feat {
 		HOR3,
 		VERT3,
 		QUAD;
+	}
+
+	@Override
+	public int compareTo(Feat o) {
+		
+		return (int) Math.floor((this.error - ((Feat)o).error)*10000);
 	}
 }
