@@ -34,6 +34,7 @@ public class Features {
 		integralFaces = new int[numbFaces][SIZE][SIZE];
 		integralNonFaces = new int[numbNonFaces][SIZE][SIZE];
 		kvp = new ArrayList<SimpleEntry<Integer, List<Feat>>>();
+		result = new ArrayList<Feat>();
 	}
 	
 	public void integralImages(String path, int max, int[][][] data) throws IOException{
@@ -77,7 +78,6 @@ public class Features {
 	public void generateFeat(int[][][] data, boolean face){
 		
 		int numFeat = 0;
-		result = new ArrayList<Feat>();
 		for(int pic = 0; pic < data.length; pic++){
 			countMyFeat = 0;
 			numFeat = 0;
