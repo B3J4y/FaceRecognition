@@ -26,11 +26,14 @@ public class Features {
 	public List<Feat> result;
 	private int countMyFeat;
 	
-	public Features(){
-		//numbFaces = new File(FACES).listFiles().length;
-		//numbNonFaces = new File(NONFACES).listFiles().length;
-		numbFaces = 50;
-		numbNonFaces = 50;
+	public Features(int numbFaces, int numbNonFaces){
+		if((numbFaces == numbNonFaces) && (numbFaces == 0)){
+			numbFaces = new File(FACES).listFiles().length;
+			numbNonFaces = new File(NONFACES).listFiles().length;
+		} else {
+			this.numbFaces = numbFaces;
+			this.numbNonFaces = numbFaces;
+		}
 		integralFaces = new int[numbFaces][SIZE][SIZE];
 		integralNonFaces = new int[numbNonFaces][SIZE][SIZE];
 		kvp = new ArrayList<SimpleEntry<Integer, List<Feat>>>();
@@ -71,8 +74,183 @@ public class Features {
 					}
 					integ += data[i][n][m] + " ";
 				}
+				if(i == 0)
+					System.out.println(integ);
 			}
 		}
+	}
+	
+	public int getSingleFeat(int[][][] data, int pic, Feat.Shape shape, Pair beg, Pair end){
+		int white1 = 0;
+		int white2 = 0;
+		int grey1 = 0;
+		int grey2 = 0;
+		switch(shape){
+		case HOR2:
+			Pair mid = new Pair(end.getFirst(), (beg.getSecond() + end.getSecond())/2);
+			if(beg.getFirst() == 0){
+				if(beg.getSecond() == 0){
+					white1 = data[pic][mid.getFirst()][mid.getSecond()];
+ 
+				} else {
+					white1 = getRectangel(data, pic, 0, 0, new Pair(mid.getFirst(), beg.getSecond()-1),  mid);
+				}
+				grey1 = getRectangel(data, pic, 0, 
+						0, 
+						mid, end);
+				
+			}else {
+				if(beg.getSecond() == 0){
+					white1 = getRectangel(data, pic, 0, 
+							0, 
+							new Pair(beg.getFirst()-1, mid.getSecond()),
+							mid);
+					
+				}else {
+				white1 = getRectangel(data, pic, new Pair(beg.getFirst() - 1, beg.getSecond()-1), 
+						new Pair(beg.getFirst() - 1, mid.getSecond()), 
+						new Pair(mid.getFirst(), beg.getSecond() - 1),
+						mid);
+				}
+				grey1 = getRectangel(data, pic, new Pair(beg.getFirst() - 1, mid.getSecond()), 
+						new Pair(beg.getFirst() -1, end.getSecond()), 
+						mid, end);
+			}
+			
+			break;
+		case HOR3:
+			Pair mid1 = new Pair(end.getFirst(), (beg.getSecond() + end.getSecond())/3);
+			Pair mid2 = new Pair(end.getFirst(), (( end.getSecond() - beg.getSecond())*2)/3 + beg.getSecond());
+			if(beg.getFirst() == 0){
+				if(beg.getSecond() == 0){
+					white1 = data[pic][mid1.getFirst()][mid1.getSecond()];
+ 
+				} else {
+					white1 = getRectangel(data, pic, 0, 0, new Pair(mid1.getFirst(), beg.getSecond()-1),  mid1);
+				}
+				grey1 = getRectangel(data, pic, 0,0, 
+						mid1, mid2);
+				white2 = getRectangel(data, pic, 0,0, mid2, end);
+			}else {
+				if(beg.getSecond()==0){
+					white1 = getRectangel(data, pic, 0, 
+							0, 
+							new Pair(beg.getFirst()-1, mid1.getSecond()),
+							mid1);
+				}else {
+					white1 = getRectangel(data, pic, new Pair(beg.getFirst() -1, beg.getSecond()-1), 
+							new Pair(beg.getFirst() - 1, mid1.getSecond()), 
+							new Pair(mid1.getFirst(), beg.getSecond() - 1),
+							mid1);
+				}
+				grey1 = getRectangel(data, pic, new Pair(beg.getFirst()-1, mid1.getSecond()), 
+						new Pair(beg.getFirst() - 1, mid2.getSecond()), 
+						mid1, mid2);
+				white2 = getRectangel(data, pic, new Pair(beg.getFirst()-1, mid2.getSecond()), 
+						new Pair(beg.getFirst() - 1, end.getSecond()), mid2, end);
+			}
+			break;
+		case VERT2:
+			Pair mid3 = new Pair((beg.getFirst() + end.getFirst())/2, end.getSecond());
+			if(beg.getFirst() == 0){
+				if(beg.getSecond() == 0){
+					white1 = data[pic][mid3.getFirst()][mid3.getSecond()];
+					grey1 = getRectangel(data, pic, 0, 0, mid3, end);
+				} else {
+					white1 = getRectangel(data, pic, 0, 0, new Pair(mid3.getFirst(), beg.getSecond()-1),  mid3);
+					grey1 = getRectangel(data, pic, new Pair(mid3.getFirst(), beg.getSecond()-1), 
+							mid3, new Pair(end.getFirst(), beg.getSecond()-1), 
+							end);
+				}
+				
+			}else {
+				
+				if(beg.getSecond() == 0){
+					white1 = getRectangel(data, pic, 0, 0, new Pair(beg.getFirst() -1, beg.getSecond()), beg);
+					grey1 = getRectangel(data, pic, 0, 0, mid3, end);
+				} else{
+					white1 = getRectangel(data, pic, new Pair(beg.getFirst()-1, beg.getSecond()-1), 
+							new Pair(beg.getFirst() - 1, mid3.getSecond()), 
+							new Pair(mid3.getFirst(), beg.getSecond() - 1),
+							mid3);
+					grey1 = getRectangel(data, pic, new Pair(mid3.getFirst(), beg.getSecond()-1), 
+							mid3, new Pair(end.getFirst(), beg.getSecond()-1), 
+							end);
+				}
+			}
+			break;
+		case VERT3:
+			Pair mid4 = new Pair((beg.getFirst() + end.getFirst())/3, end.getSecond());
+			Pair mid5 = new Pair(((end.getFirst() - beg.getFirst())*2)/3 + beg.getFirst(), end.getSecond());
+			if(beg.getFirst() == 0){
+				if(beg.getSecond() == 0){
+					white1 = data[pic][mid4.getFirst()][mid4.getSecond()];
+					grey1 = getRectangel(data, pic, 0, 0, mid4, mid5);
+					white2 = getRectangel(data, pic, 0, 0, mid5, end);
+				} else {
+					white1 = getRectangel(data, pic, 0, 0, new Pair(mid4.getFirst(), beg.getSecond()-1),  mid4);
+					grey1 = getRectangel(data, pic, new Pair(mid4.getFirst(), beg.getSecond()-1), 
+							mid4, new Pair(mid5.getFirst(), beg.getSecond()-1), 
+							mid5);
+					white2 = getRectangel(data, pic, new Pair(mid5.getFirst(), beg.getSecond()-1), 
+							mid5, new Pair(end.getFirst(), beg.getSecond()-1), 
+							end);
+				}
+				
+			}else {
+				
+				if(beg.getSecond() == 0){
+					white1 = getRectangel(data, pic, 0, 0, new Pair(beg.getFirst() -1, beg.getSecond()), beg);
+					grey1 = getRectangel(data, pic, 0, 0, mid4, mid5);
+					white2 = getRectangel(data, pic, 0, 0, mid5, end);
+				} else{
+					white1 = getRectangel(data, pic, new Pair(beg.getFirst()-1, beg.getSecond()-1), 
+							new Pair(beg.getFirst() - 1, mid4.getSecond()), 
+							new Pair(mid4.getFirst(), beg.getSecond() - 1),
+							mid4);
+					grey1 = getRectangel(data, pic, new Pair(mid4.getFirst(), beg.getSecond()-1), 
+							mid4, new Pair(mid5.getFirst(), beg.getSecond()-1), 
+							mid5);
+					white2 = getRectangel(data, pic, new Pair(mid5.getFirst(), beg.getSecond()-1), 
+							mid5, new Pair(end.getFirst(), beg.getSecond()-1), 
+							end);
+				}
+			}
+			
+			break;
+			//TODO: Debug Quad
+		case QUAD:
+			Pair mid6 = new Pair((beg.getFirst() + end.getFirst())/2, (beg.getSecond() + end.getSecond())/2);
+			Pair end1 = new Pair (mid6.getFirst(), end.getSecond());
+			Pair mid7 = new Pair(end.getFirst(), (beg.getSecond() + end.getSecond())/2);
+			if(beg.getFirst() == 0){
+				if(beg.getSecond() == 0){
+					white1 = data[pic][mid6.getFirst()][mid6.getSecond()];
+ 
+				} else {
+					white1 = getRectangel(data, pic, 0, 0, new Pair(mid6.getFirst(), beg.getSecond()-1),  mid6);
+				}
+				
+			}else {
+				white1 = getRectangel(data, pic, new Pair(beg.getFirst() - 1, beg.getSecond()-1), 
+						new Pair(beg.getFirst() - 1, mid6.getSecond()), 
+						new Pair(mid6.getFirst(), beg.getSecond() - 1),
+						mid6);
+			}
+			grey1 = getRectangel(data, pic, new Pair(beg.getFirst()-1, mid6.getSecond()), 
+					new Pair(beg.getFirst() - 1, end.getSecond()), 
+					mid6, end1);
+			if(beg.getSecond() == 0){
+				grey2 = getRectangel(data, pic, 0, 0, mid6, mid7);
+			}else {
+				grey2 = getRectangel(data, pic, new Pair(mid6.getFirst(), beg.getSecond()-1), 
+						mid6, new Pair(end.getFirst(), beg.getSecond()-1), 
+						mid7);
+			}
+			white2 = getRectangel(data, pic, mid6, end1, mid7, end);
+			break;
+		}
+		return grey1 + grey2 - white1 - white2;
 	}
 	
 	public void generateFeat(int[][][] data, boolean face){
@@ -404,7 +582,7 @@ public class Features {
 			result.get(count).valuesFaces.add(new ValueFace(value, face));
 		}
 	}
-	private int getRectangel(int[][][] data, int numb, Pair a, Pair b, Pair c, Pair d){
+	public int getRectangel(int[][][] data, int numb, Pair a, Pair b, Pair c, Pair d){
 		int result = 0;
 		result = data[numb][d.getFirst()][d.getSecond()] + data[numb][a.getFirst()][a.getSecond()]
 				- data[numb][b.getFirst()][b.getSecond()] - data[numb][c.getFirst()][c.getSecond()];
@@ -419,13 +597,22 @@ public class Features {
 	
 	public static void main(String[] args) throws IOException {
 		System.out.println(new Date());
-		Features feat = new Features();
+		Features feat = new Features(50,50);
 		feat.integralImages(feat.FACES, feat.numbFaces, feat.integralFaces);
+		for(int i = 0; i < 2; i++){
+			for (int j = 0; j < 4; j+=2) {
+				System.out.println(i + " " + j + " " + feat.getSingleFeat(feat.integralFaces, 0, Feat.Shape.VERT3, 
+								new Pair(i, j), new Pair(i+2, j)));
+				
+			}
+		}
+		/*
 		feat.integralImages(feat.NONFACES, feat.numbNonFaces, feat.integralNonFaces);
 		feat.generateFeat(feat.integralFaces, true);
 		feat.generateFeat(feat.integralNonFaces, false);
 		List<Feat> myfeats = feat.result;
 		System.out.println(new Date());
 		System.out.println(myfeats.size());
+		*/
 	}
 }

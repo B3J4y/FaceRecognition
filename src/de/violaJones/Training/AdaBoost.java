@@ -7,16 +7,22 @@ import java.util.Date;
 import java.util.List;
 
 import de.violaJones.Features.*;
+import de.violaJones.Features.Feat.Shape;
 
 public class AdaBoost {
 	public List<Feat> features;
 	
 	public AdaBoost() throws IOException{
-		Features feat = new Features();
+		Features feat = new Features(100, 100);
 		feat.integralImages(feat.FACES, feat.numbFaces, feat.integralFaces);
+		System.out.println(new Date() + "--- Integralfaces. Done");
 		feat.integralImages(feat.NONFACES, feat.numbNonFaces, feat.integralNonFaces);
+		System.out.println(new Date() + "--- Integralnonfaces. Done");
 		feat.generateFeat(feat.integralFaces, true);
+		System.out.println(new Date() + "--- done. Generate Feat. (Faces)");
 		feat.generateFeat(feat.integralNonFaces, false);
+		System.out.println(new Date() + "--- done. Generate Feat. (Nonfaces)");
+		System.out.println(new Date());
 		features = feat.result;
 		
 		for(Feat f : features){
@@ -74,6 +80,36 @@ public class AdaBoost {
 			}
 		}
 		return weakClassifiers;
+	}
+	
+	public double classifierData(List<Feat> classifiers) throws IOException{
+		Features f = new Features(0, 0);
+		f.integralImages(f.FACES, f.numbFaces, f.integralFaces);
+		System.out.println(new Date() + "--- Integralfaces. Done");
+		f.integralImages(f.NONFACES, f.numbNonFaces, f.integralNonFaces);
+		System.out.println(new Date() + "--- Integralnonfaces. Done");
+		for(Feat cl : classifiers){
+			//Point endPoint = new Point(cl.position.getFirst() , cl.size.getFirst());
+			//get Rectangle data
+			switch(cl.shape){
+			case HOR2:
+							
+				break;
+			case HOR3:
+				
+				break;
+			case VERT2:
+				
+				break;
+			case VERT3:
+				
+				break;
+			case QUAD:
+				
+				break;
+			}
+		}
+		return 0.0;
 	}
 	public static void main(String[] args) throws IOException {
 		System.out.println(new Date());

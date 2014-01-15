@@ -6,11 +6,12 @@ import java.util.Collections;
 import java.util.List;
 
 public class Feat implements Comparable<Feat> {
-	boolean face;
-	Shape shape;
-	Pair position;
-	Pair size;
 	private double allweight;
+	
+	boolean face;
+	public Shape shape;
+	public Pair position;
+	public Pair size;
 	public int treshold;
 	public int polarity;
 	public double error;
@@ -88,7 +89,7 @@ public class Feat implements Comparable<Feat> {
 				+ face;
 	}
 	
-	enum Shape{
+	public enum Shape{
 		HOR2,
 		VERT2,
 		HOR3,
